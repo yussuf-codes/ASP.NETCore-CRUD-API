@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using API.Models;
@@ -7,54 +8,17 @@ namespace API.Repositories;
 
 public class NotesRepository : INotesRepository
 {
-    private int _nextId = 3;
-
     private readonly List<Note> _notes = new()
     {
-        new Note() { Id = 1, Title = "Shopping", Body = "Buy some coffee" },
-        new Note() { Id = 2, Title = "SOLID Principles", Body = "SIP, OCP, LSP, ISP, DIP" }
+        new Note() { Title = "Shopping", Body = "Buy some coffee" },
+        new Note() { Title = "SOLID Principles", Body = "SIP, OCP, LSP, ISP, DIP" }
     };
 
-    private int Index(int id)
-    {
-        return _notes.FindIndex(obj => obj.Id == id);
-    }
-
-    public Note Add(Note obj)
-    {
-        obj.Id = _nextId++;
-        _notes.Add(obj);
-        return obj;
-    }
-
-    public void Delete(int id)
-    {
-        int index = Index(id);
-        _notes.RemoveAt(index);
-    }
-
-    public bool Exists(int id)
-    {
-        Note? obj = _notes.SingleOrDefault(obj => obj.Id == id);
-        if (obj is null)
-            return false;
-        return true;
-    }
-
-    public IEnumerable<Note> Get()
-    {
-        return _notes;
-    }
-
-    public Note Get(int id)
-    {
-        int index = Index(id);
-        return _notes[index];
-    }
-
-    public void Update(int id, Note obj)
-    {
-        int index = Index(id);
-        _notes[index] = obj;
-    }
+    private int GetIndex(Guid id) => _notes.FindIndex(obj => obj.Id == id);
+    public void Add(Note obj) => _notes.Add(obj);
+    public void Delete(Guid id) => _notes.RemoveAt(GetIndex(id));
+    public bool Exists(Guid id) => _notes.Any(obj => obj.Id == id);
+    public IEnumerable<Note> Get() => _notes;
+    public Note Get(Guid id) => _notes[GetIndex(id)];
+    public void Update(Guid id, Note obj) => _notes[GetIndex(id)] = obj;
 }

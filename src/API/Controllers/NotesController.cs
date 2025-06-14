@@ -1,27 +1,27 @@
+using System;
+using API.DTOs.Requests;
 using API.Exceptions;
-using API.Models;
-using API.Services;
+using API.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
 public class NotesController : ControllerBase
 {
-    private readonly NotesService _notesService;
+    private readonly INotesService _service;
 
-    public NotesController(NotesService notesService)
+    public NotesController(INotesService service)
     {
-        _notesService = notesService;
+        _service = service;
     }
 
-    [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    [HttpDelete(Endpoints.Notes.Delete)]
+    public IActionResult Delete(Guid id)
     {
         try
         {
-            _notesService.Delete(id);
+            _service.Delete(id);
             return NoContent();
         }
         catch (NotFoundException)
@@ -30,15 +30,15 @@ public class NotesController : ControllerBase
         }
     }
 
-    [HttpGet]
-    public IActionResult Get() => Ok(_notesService.Get());
+    [HttpGet(Endpoints.Notes.Get)]
+    public IActionResult Get() => Ok(_service.Get());
 
-    [HttpGet("{id:int}")]
-    public IActionResult Get(int id)
+    [HttpGet(Endpoints.Notes.GetById)]
+    public IActionResult Get(Guid id)
     {
         try
         {
-            return Ok(_notesService.Get(id));
+            return Ok(_service.Get(id));
         }
         catch (NotFoundException)
         {
@@ -46,19 +46,19 @@ public class NotesController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public IActionResult Post(Note obj)
+    [HttpPost(Endpoints.Notes.Create)]
+    public IActionResult Post(CreateNoteRequest request)
     {
-        Note note = _notesService.Add(obj);
-        return CreatedAtAction(nameof(Get), new { id = note.Id }, note);
+        _service.Create(request);
+        return NoContent();
     }
 
-    [HttpPut("{id:int}")]
-    public IActionResult Put(int id, Note obj)
+    [HttpPut(Endpoints.Notes.Update)]
+    public IActionResult Put(Guid id, UpdateNoteRequest request)
     {
         try
         {
-            _notesService.Update(id, obj);
+            _service.Update(id, request);
             return NoContent();
         }
         catch (BadRequestException)
