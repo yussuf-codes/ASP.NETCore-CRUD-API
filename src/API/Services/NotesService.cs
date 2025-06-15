@@ -18,11 +18,11 @@ public class NotesService : INotesService
         _repository = repository;
     }
 
-    public Guid Create(CreateNoteRequest request)
+    public GetNoteResponse Create(CreateNoteRequest request)
     {
         Note note = request.MapToNote();
-        _repository.Add(note);
-        return note.Id;
+        GetNoteResponse response = _repository.Create(note).MapToResponse();
+        return response;
     }
 
     public void Delete(Guid id)

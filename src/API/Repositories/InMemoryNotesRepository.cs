@@ -6,7 +6,7 @@ using API.Repositories.IRepositories;
 
 namespace API.Repositories;
 
-public class NotesRepository : INotesRepository
+public class InMemoryNotesRepository : INotesRepository
 {
     private readonly List<Note> _notes = new()
     {
@@ -15,7 +15,11 @@ public class NotesRepository : INotesRepository
     };
 
     private int GetIndex(Guid id) => _notes.FindIndex(obj => obj.Id == id);
-    public void Add(Note obj) => _notes.Add(obj);
+    public Note Create(Note obj)
+    {
+        _notes.Add(obj);
+        return _notes[GetIndex(obj.Id)];
+    }
     public void Delete(Guid id) => _notes.RemoveAt(GetIndex(id));
     public bool Exists(Guid id) => _notes.Any(obj => obj.Id == id);
     public IEnumerable<Note> Get() => _notes;

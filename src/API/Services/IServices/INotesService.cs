@@ -7,7 +7,7 @@ namespace API.Services.IServices;
 
 public interface INotesService
 {
-    Guid Create(CreateNoteRequest request);
+    GetNoteResponse Create(CreateNoteRequest request);
     void Delete(Guid id);
     GetNoteResponse Get(Guid id);
     IEnumerable<GetNoteResponse> Get();

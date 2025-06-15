@@ -6,7 +6,7 @@ namespace API.Repositories.IRepositories;
 
 public interface INotesRepository
 {
-    void Add(Note obj);
+    Note Create(Note obj);
     void Delete(Guid id);
     bool Exists(Guid id);
     IEnumerable<Note> Get();

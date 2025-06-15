@@ -4,11 +4,25 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>a888c70f-84c8-45a6-8155-828578f1d9b3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
-		<PackageReference Include="Scalar.AspNetCore" Version="2.4.8" />
+    <!-- dotnet add package Microsoft.AspNetCore.OpenApi -->
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+    <!-- dotnet add package Scalar.AspNetCore -->
+		<PackageReference Include="Scalar.AspNetCore" Version="2.4.16" />
+    <!-- dotnet add package Microsoft.EntityFrameworkCore -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <!-- dotnet add package Microsoft.EntityFrameworkCore.Design -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!-- dotnet add package Microsoft.EntityFrameworkCore.SqlServer -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <!-- dotnet add package Microsoft.Extensions.Configuration.UserSecrets -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.6" />
 	</ItemGroup>
 
 </Project>

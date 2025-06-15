@@ -1,5 +1,6 @@
 using System;
 using API.DTOs.Requests;
+using API.DTOs.Responses;
 using API.Exceptions;
 using API.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -49,8 +50,8 @@ public class NotesController : ControllerBase
     [HttpPost(Endpoints.Notes.Create)]
     public IActionResult Post(CreateNoteRequest request)
     {
-        _service.Create(request);
-        return NoContent();
+        GetNoteResponse response = _service.Create(request);
+        return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
     }
 
     [HttpPut(Endpoints.Notes.Update)]
