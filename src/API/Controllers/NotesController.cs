@@ -3,10 +3,12 @@ using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Exceptions;
 using API.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 [ApiController]
 public class NotesController : ControllerBase
 {

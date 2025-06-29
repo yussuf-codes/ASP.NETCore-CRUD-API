@@ -2,16 +2,22 @@ namespace API;
 
 public static class Endpoints
 {
-    private const string APIBase = "api";
+    private const string EndpointsBase = "api";
+
+    public static class Auth
+    {
+        public const string Register = $"{EndpointsBase}/register";
+        public const string Login = $"{EndpointsBase}/login";
+    }
 
     public static class Notes
     {
-        private const string Base = $"{APIBase}/notes";
+        private const string NotesBase = $"{EndpointsBase}/notes";
 
-        public const string Create = Base;
-        public const string Delete = $"{Base}/{{id:Guid}}";
-        public const string Get = Base;
-        public const string GetById = $"{Base}/{{id:Guid}}";
-        public const string Update = $"{Base}/{{id:Guid}}";
+        public const string Create = NotesBase;
+        public const string Delete = $"{NotesBase}/{{id:Guid}}";
+        public const string Get = NotesBase;
+        public const string GetById = $"{NotesBase}/{{id:Guid}}";
+        public const string Update = $"{NotesBase}/{{id:Guid}}";
     }
 }

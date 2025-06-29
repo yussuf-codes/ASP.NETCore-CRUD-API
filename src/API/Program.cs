@@ -1,14 +1,19 @@
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using API.Models;
+using API.Persistence;
 using API.Repositories;
 using API.Repositories.IRepositories;
 using API.Services;
 using API.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 namespace API;
@@ -23,11 +28,35 @@ public static class Program
 
         builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly());
 
+        JWTConfig jwtConfig = builder.Configuration.GetSection("JWTConfig").Get<JWTConfig>()!;
+
+        builder.Services.AddSingleton(jwtConfig);
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = jwtConfig.Issuer,
+                ValidAudience = jwtConfig.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+            };
+        });
+
+        builder.Services.AddAuthorization();
+
         builder.Services.AddControllers();
 
-        // builder.Services.AddScoped<INotesRepository, EFCoreNotesRepository>();
-        builder.Services.AddSingleton<INotesRepository, InMemoryNotesRepository>();
+        builder.Services.AddScoped<INotesRepository, EFCoreNotesRepository>();
+        builder.Services.AddScoped<IUsersRepository, EFCoreUsersRepository>();
+
         builder.Services.AddScoped<INotesService, NotesService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
 
         builder.Services.AddOpenApi();
 
@@ -41,8 +70,9 @@ public static class Program
             });
         });
 
-        // string? connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Database"));
 
+        // string? connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
         // builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
         WebApplication app = builder.Build();
@@ -57,6 +87,10 @@ public static class Program
             app.UseHttpsRedirection();
 
         app.UseCors(AllowAllOrigins);
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
 
         app.MapControllers();
 

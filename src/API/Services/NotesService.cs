@@ -57,7 +57,6 @@ public class NotesService : INotesService
         if (!_repository.Exists(id))
             throw new NotFoundException();
         Note note = request.MapToNote();
-        note.Id = request.Id;
         _repository.Update(id, note);
     }
 }
