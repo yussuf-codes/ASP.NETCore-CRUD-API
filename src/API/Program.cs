@@ -22,31 +22,35 @@ public static class Program
 {
     public static async Task Main()
     {
-        string AllowAllOrigins = "AllowAllOrigins";
-
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
-        builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly());
+        Assembly executingAssembly = Assembly.GetExecutingAssembly();
 
-        JWTConfig jwtConfig = builder.Configuration.GetSection("JWTConfig").Get<JWTConfig>()!;
+        builder.Configuration.AddUserSecrets(executingAssembly);
 
-        builder.Services.AddSingleton(jwtConfig);
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        JWTSettings jwtSettings = new JWTSettings()
         {
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = jwtConfig.Issuer,
-                ValidAudience = jwtConfig.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-            };
-        });
+            signingKey = Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:SigningKey"] ?? "TotallyInsecureJwtKeyButGreatForDebugging")
+        };
+
+        builder.Services.AddSingleton(jwtSettings);
+
+        builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidAudience = jwtSettings.Audience,
+                        ValidIssuer = jwtSettings.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.signingKey),
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
 
         builder.Services.AddAuthorization();
 
@@ -58,7 +62,7 @@ public static class Program
         builder.Services.AddScoped<INotesService, NotesService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
 
-        builder.Services.AddOpenApi();
+        string AllowAllOrigins = "AllowAllOrigins";
 
         builder.Services.AddCors(options =>
         {
@@ -72,8 +76,14 @@ public static class Program
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("Database"));
 
-        // string? connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
-        // builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+        // string connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"] ?? throw new Exception("Connection string is not provided.");
+
+        // builder.Services.AddDbContext<ApplicationDbContext>
+        // (
+        //     options => options.UseSqlServer(connectionString)
+        // );
+
+        builder.Services.AddOpenApi();
 
         WebApplication app = builder.Build();
 

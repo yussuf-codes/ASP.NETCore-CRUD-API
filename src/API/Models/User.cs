@@ -5,9 +5,9 @@ namespace API.Models;
 
 public class User : ModelBase
 {
-    public required string Username { get; set; }
+    public required string Username { get; init; }
     public required byte[] Hash { get; set; }
     public required byte[] Salt { get; set; }
 
-    public ICollection<Note>? Notes { get; set; }
+    public ICollection<Note>? Notes { get; }
 }

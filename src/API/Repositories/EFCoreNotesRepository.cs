@@ -31,17 +31,33 @@ public class EFCoreNotesRepository : INotesRepository
         _dbContext.SaveChanges();
     }
 
-    public bool Exists(Guid id)
+    public bool Exists(Guid id, Guid userId)
     {
-        Note? obj = _dbContext.Notes.SingleOrDefault(obj => obj.Id == id);
+        Note? obj = _dbContext.Notes
+            .AsNoTracking()
+            .Where(n => n.UserId == userId)
+            .SingleOrDefault(obj => obj.Id == id);
+
         if (obj is null)
             return false;
         return true;
     }
 
-    public IEnumerable<Note> Get() => _dbContext.Notes.AsNoTracking().ToList();
+    public IEnumerable<Note> Get(Guid userId)
+    {
+        return _dbContext.Notes
+                            .AsNoTracking()
+                            .Where(n => n.UserId == userId)
+                            .ToList();
+    }
 
-    public Note Get(Guid id) => _dbContext.Notes.AsNoTracking().Single(obj => obj.Id == id);
+    public Note Get(Guid id, Guid userId)
+    {
+        return _dbContext.Notes
+                            .AsNoTracking()
+                            .Where(n => n.UserId == userId)
+                            .Single(obj => obj.Id == id);
+    }
 
     public void Update(Guid id, Note obj)
     {

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Exceptions;
@@ -19,12 +21,16 @@ public class NotesController : ControllerBase
         _service = service;
     }
 
+    private Guid GetUserId() => Guid.Parse(User.FindFirstValue("sub")!);
+
     [HttpDelete(Endpoints.Notes.Delete)]
     public IActionResult Delete(Guid id)
     {
+        Guid userId = GetUserId();
+
         try
         {
-            _service.Delete(id);
+            _service.Delete(id, userId);
             return NoContent();
         }
         catch (NotFoundException)
@@ -34,14 +40,21 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet(Endpoints.Notes.Get)]
-    public IActionResult Get() => Ok(_service.Get());
+    public IActionResult Get()
+    {
+        Guid userId = GetUserId();
+        IEnumerable<GetNoteResponse> response = _service.Get(userId);
+        return Ok(response);
+    }
 
     [HttpGet(Endpoints.Notes.GetById)]
     public IActionResult Get(Guid id)
     {
+        Guid userId = GetUserId();
+
         try
         {
-            return Ok(_service.Get(id));
+            return Ok(_service.Get(id, userId));
         }
         catch (NotFoundException)
         {
@@ -52,16 +65,19 @@ public class NotesController : ControllerBase
     [HttpPost(Endpoints.Notes.Create)]
     public IActionResult Post(CreateNoteRequest request)
     {
-        GetNoteResponse response = _service.Create(request);
+        Guid userId = GetUserId();
+        GetNoteResponse response = _service.Create(request, userId);
         return CreatedAtAction(nameof(Get), new { id = response.Id }, response);
     }
 
     [HttpPut(Endpoints.Notes.Update)]
     public IActionResult Put(Guid id, UpdateNoteRequest request)
     {
+        Guid userId = GetUserId();
+
         try
         {
-            _service.Update(id, request);
+            _service.Update(id, userId, request);
             return NoContent();
         }
         catch (BadRequestException)

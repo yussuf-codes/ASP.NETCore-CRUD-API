@@ -16,12 +16,12 @@ namespace API.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly JWTConfig _jwtConfig;
+    private readonly JWTSettings _jwtSettings;
     private readonly IUsersRepository _usersRepository;
 
-    public AuthService(IUsersRepository usersRepository, JWTConfig jwtConfig)
+    public AuthService(JWTSettings jwtSettings, IUsersRepository usersRepository)
     {
-        _jwtConfig = jwtConfig;
+        _jwtSettings = jwtSettings;
         _usersRepository = usersRepository;
     }
 
@@ -60,7 +60,7 @@ public class AuthService : IAuthService
         {
             Username = user.Username,
             AccessToken = GenerateToken(user.Id, user.Username),
-            ExpiresIn = _jwtConfig.Lifetime
+            ExpiresIn = _jwtSettings.Lifetime
         };
 
         return response;
@@ -68,24 +68,25 @@ public class AuthService : IAuthService
 
     private string GenerateToken(Guid userId, string username)
     {
-        byte[] key_bytes = Encoding.UTF8.GetBytes(_jwtConfig.Key);
-        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key_bytes);
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(_jwtSettings.signingKey);
+        SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         Claim[] claims =
         {
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            new Claim("username", username),
+            new Claim("sub", userId.ToString())
         };
+
+        DateTime utcNow = DateTime.UtcNow;
 
         SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
         {
-            Audience = _jwtConfig.Audience,
-            Issuer = _jwtConfig.Issuer,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(_jwtConfig.Lifetime),
-            IssuedAt = DateTime.UtcNow,
-            NotBefore = DateTime.UtcNow,
+            Audience = _jwtSettings.Audience,
+            Issuer = _jwtSettings.Issuer,
+            IssuedAt = utcNow,
+            NotBefore = utcNow,
+            Expires = utcNow.AddMinutes(_jwtSettings.Lifetime),
             SigningCredentials = credentials
         };
 

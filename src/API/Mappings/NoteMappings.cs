@@ -2,9 +2,9 @@ using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Models;
 
-namespace API;
+namespace API.Mappings;
 
-public static class Mapping
+public static class NoteMappings
 {
     public static GetNoteResponse MapToResponse(this Note note)
     {
@@ -29,6 +29,7 @@ public static class Mapping
     {
         return new Note()
         {
+            Id = request.Id,
             Title = request.Title,
             Body = request.Body
         };

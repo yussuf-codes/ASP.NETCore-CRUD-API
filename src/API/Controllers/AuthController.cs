@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
         }
         catch (ConflictException)
         {
-            return Conflict();
+            return Conflict("Username already taken.");
         }
     }
 
@@ -40,13 +40,9 @@ public class AuthController : ControllerBase
             LoginResponse response = _authService.Login(request);
             return Ok(response);
         }
-        catch (NotFoundException)
+        catch (System.Exception)
         {
-            return NotFound();
-        }
-        catch (UnauthorizedException)
-        {
-            return Unauthorized();
+            return Unauthorized("Incorrect username or password.");
         }
     }
 }
