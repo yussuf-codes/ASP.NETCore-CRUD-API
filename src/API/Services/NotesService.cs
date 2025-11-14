@@ -19,7 +19,7 @@ public class NotesService : INotesService
         _repository = repository;
     }
 
-    public GetNoteResponse Create(CreateNoteRequest request, Guid userId)
+    public GetNoteResponse Create(NoteRequest request, Guid userId)
     {
         Note note = request.MapToNote();
         note.UserId = userId;
@@ -53,13 +53,8 @@ public class NotesService : INotesService
         return response;
     }
 
-    public void Update(Guid id, Guid userId, UpdateNoteRequest request)
+    public void Update(Guid id, Guid userId, NoteRequest request)
     {
-        if (id != request.Id)
-            throw new BadRequestException();
-        if (!_repository.Exists(id, userId))
-            throw new NotFoundException();
-        Note note = request.MapToNote();
-        _repository.Update(id, note);
+        throw new NotImplementedException();
     }
 }

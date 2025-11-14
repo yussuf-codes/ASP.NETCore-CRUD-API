@@ -16,20 +16,10 @@ public static class NoteMappings
         };
     }
 
-    public static Note MapToNote(this CreateNoteRequest request)
+    public static Note MapToNote(this NoteRequest request)
     {
         return new Note()
         {
-            Title = request.Title,
-            Body = request.Body
-        };
-    }
-
-    public static Note MapToNote(this UpdateNoteRequest request)
-    {
-        return new Note()
-        {
-            Id = request.Id,
             Title = request.Title,
             Body = request.Body
         };

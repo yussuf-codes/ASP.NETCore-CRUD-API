@@ -1,0 +1,35 @@
+###
+POST http://localhost:5555/api/register/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "joe",
+    "password": "5rs46d5fr556"
+}
+
+###
+POST http://localhost:5555/api/register/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "lana",
+    "password": "s5d64sv46dd5"
+}
+
+###
+POST http://localhost:5555/api/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "joe",
+    "password": "5rs46d5fr556"
+}
+
+###
+POST http://localhost:5555/api/login/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "lana",
+    "password": "s5d64sv46dd5"
+}

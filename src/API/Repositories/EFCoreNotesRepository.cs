@@ -34,9 +34,9 @@ public class EFCoreNotesRepository : INotesRepository
     public bool Exists(Guid id, Guid userId)
     {
         Note? obj = _dbContext.Notes
-            .AsNoTracking()
-            .Where(n => n.UserId == userId)
-            .SingleOrDefault(obj => obj.Id == id);
+                            .AsNoTracking()
+                            .Where(n => n.UserId == userId)
+                            .SingleOrDefault(obj => obj.Id == id);
 
         if (obj is null)
             return false;
@@ -61,7 +61,6 @@ public class EFCoreNotesRepository : INotesRepository
 
     public void Update(Guid id, Note obj)
     {
-        _dbContext.Notes.Entry(_dbContext.Notes.Single(note => note.Id == id)).CurrentValues.SetValues(obj);
-        _dbContext.SaveChanges();
+        throw new NotImplementedException();
     }
 }

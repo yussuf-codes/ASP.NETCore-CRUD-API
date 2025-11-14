@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>a888c70f-84c8-45a6-8155-828578f1d9b3</UserSecretsId>
@@ -25,8 +25,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.6" />
     <!-- dotnet add package Microsoft.EntityFrameworkCore.SqlServer -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
-    <!-- dotnet add package Microsoft.Extensions.Configuration.UserSecrets -->
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.6" />
 	</ItemGroup>
 
 </Project>

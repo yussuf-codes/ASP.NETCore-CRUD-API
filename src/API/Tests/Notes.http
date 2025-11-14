@@ -1,0 +1,31 @@
+###
+DELETE http://localhost:5555/api/notes/362e3671-b663-4405-af59-1472761456d3/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxhbmEiLCJzdWIiOiJmMjJhOTg1ZS1kOGVkLTRhZmMtOGZjMy00NWIzYWNhZDAwZGMiLCJuYmYiOjE3NjMwOTc0NjksImV4cCI6MTc2MzA5OTI2OSwiaWF0IjoxNzYzMDk3NDY5LCJpc3MiOiI8aXNzdWVyPiIsImF1ZCI6IjxhdWRpZW5jZT4ifQ.JaKI5-Z-rbITwS0S-ZDJd8z4aPetR266NaRYeP0mUfw
+
+###
+GET http://localhost:5555/api/notes/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxhbmEiLCJzdWIiOiJmMjJhOTg1ZS1kOGVkLTRhZmMtOGZjMy00NWIzYWNhZDAwZGMiLCJuYmYiOjE3NjMwOTc0NjksImV4cCI6MTc2MzA5OTI2OSwiaWF0IjoxNzYzMDk3NDY5LCJpc3MiOiI8aXNzdWVyPiIsImF1ZCI6IjxhdWRpZW5jZT4ifQ.JaKI5-Z-rbITwS0S-ZDJd8z4aPetR266NaRYeP0mUfw
+
+###
+GET http://localhost:5555/api/notes/362e3671-b663-4405-af59-1472761456d3/ HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxhbmEiLCJzdWIiOiJmMjJhOTg1ZS1kOGVkLTRhZmMtOGZjMy00NWIzYWNhZDAwZGMiLCJuYmYiOjE3NjMwOTc0NjksImV4cCI6MTc2MzA5OTI2OSwiaWF0IjoxNzYzMDk3NDY5LCJpc3MiOiI8aXNzdWVyPiIsImF1ZCI6IjxhdWRpZW5jZT4ifQ.JaKI5-Z-rbITwS0S-ZDJd8z4aPetR266NaRYeP0mUfw
+
+###
+POST http://localhost:5555/api/notes/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxhbmEiLCJzdWIiOiJmMjJhOTg1ZS1kOGVkLTRhZmMtOGZjMy00NWIzYWNhZDAwZGMiLCJuYmYiOjE3NjMwOTc0NjksImV4cCI6MTc2MzA5OTI2OSwiaWF0IjoxNzYzMDk3NDY5LCJpc3MiOiI8aXNzdWVyPiIsImF1ZCI6IjxhdWRpZW5jZT4ifQ.JaKI5-Z-rbITwS0S-ZDJd8z4aPetR266NaRYeP0mUfw
+
+{
+    "title": "Most Important Shell Commands",
+    "body": "cd, ls & pwd"
+}
+
+###
+PUT http://localhost:5555/api/notes/362e3671-b663-4405-af59-1472761456d3/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxhbmEiLCJzdWIiOiJmMjJhOTg1ZS1kOGVkLTRhZmMtOGZjMy00NWIzYWNhZDAwZGMiLCJuYmYiOjE3NjMwOTc0NjksImV4cCI6MTc2MzA5OTI2OSwiaWF0IjoxNzYzMDk3NDY5LCJpc3MiOiI8aXNzdWVyPiIsImF1ZCI6IjxhdWRpZW5jZT4ifQ.JaKI5-Z-rbITwS0S-ZDJd8z4aPetR266NaRYeP0mUfw
+
+{
+    "title": "Most Important Bash Commands",
+    "body": "cd, ls & pwd"
+}

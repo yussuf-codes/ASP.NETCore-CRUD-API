@@ -21,7 +21,7 @@ public class NotesController : ControllerBase
         _service = service;
     }
 
-    private Guid GetUserId() => Guid.Parse(User.FindFirstValue("sub")!);
+    private Guid GetUserId() => Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
     [HttpDelete(Endpoints.Notes.Delete)]
     public IActionResult Delete(Guid id)
@@ -63,7 +63,7 @@ public class NotesController : ControllerBase
     }
 
     [HttpPost(Endpoints.Notes.Create)]
-    public IActionResult Post(CreateNoteRequest request)
+    public IActionResult Post(NoteRequest request)
     {
         Guid userId = GetUserId();
         GetNoteResponse response = _service.Create(request, userId);
@@ -71,22 +71,8 @@ public class NotesController : ControllerBase
     }
 
     [HttpPut(Endpoints.Notes.Update)]
-    public IActionResult Put(Guid id, UpdateNoteRequest request)
+    public IActionResult Put(Guid id, NoteRequest request)
     {
-        Guid userId = GetUserId();
-
-        try
-        {
-            _service.Update(id, userId, request);
-            return NoContent();
-        }
-        catch (BadRequestException)
-        {
-            return BadRequest();
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        throw new NotImplementedException();
     }
 }
