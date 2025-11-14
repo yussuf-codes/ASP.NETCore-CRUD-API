@@ -61,6 +61,11 @@ public class EFCoreNotesRepository : INotesRepository
 
     public void Update(Guid id, Note obj)
     {
-        throw new NotImplementedException();
+        Note existing = _dbContext.Notes.Single(n => n.Id == id);
+
+        existing.Title = obj.Title;
+        existing.Body = obj.Body;
+
+        _dbContext.SaveChanges();
     }
 }

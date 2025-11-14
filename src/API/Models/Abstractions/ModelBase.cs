@@ -6,7 +6,7 @@ namespace API.Models.Abstractions;
 public abstract class ModelBase
 {
     [Key]
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

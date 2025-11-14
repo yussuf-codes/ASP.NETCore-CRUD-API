@@ -53,8 +53,11 @@ public class NotesService : INotesService
         return response;
     }
 
-    public void Update(Guid id, Guid userId, NoteRequest request)
+    public void Update(Guid id, NoteRequest request, Guid userId)
     {
-        throw new NotImplementedException();
+        if (!_repository.Exists(id, userId))
+            throw new NotFoundException();
+        Note note = request.MapToNote();
+        _repository.Update(id, note);
     }
 }

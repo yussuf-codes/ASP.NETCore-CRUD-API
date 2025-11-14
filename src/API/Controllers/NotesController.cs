@@ -73,6 +73,15 @@ public class NotesController : ControllerBase
     [HttpPut(Endpoints.Notes.Update)]
     public IActionResult Put(Guid id, NoteRequest request)
     {
-        throw new NotImplementedException();
+        Guid userId = GetUserId();
+        try
+        {
+            _service.Update(id, request, userId);
+            return NoContent();
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 }
