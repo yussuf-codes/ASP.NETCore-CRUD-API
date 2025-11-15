@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Exceptions;
@@ -19,45 +20,45 @@ public class NotesService : INotesService
         _repository = repository;
     }
 
-    public GetNoteResponse Create(NoteRequest request, Guid userId)
+    public async Task<GetNoteResponse> CreateAsync(NoteRequest request, Guid userId)
     {
         Note note = request.MapToNote();
         note.UserId = userId;
-        note = _repository.Create(note);
+        note = await _repository.CreateAsync(note);
         GetNoteResponse response = note.MapToResponse();
         return response;
     }
 
-    public void Delete(Guid id, Guid userId)
+    public async Task DeleteAsync(Guid id, Guid userId)
     {
-        if (!_repository.Exists(id, userId))
+        if (!await _repository.ExistsAsync(id, userId))
             throw new NotFoundException();
-        _repository.Delete(id);
+        await _repository.DeleteAsync(id);
     }
 
-    public IEnumerable<GetNoteResponse> Get(Guid userId)
+    public async Task<GetNoteResponse> GetAsync(Guid id, Guid userId)
     {
-        IEnumerable<Note> notes = _repository.Get(userId);
+        if (!await _repository.ExistsAsync(id, userId))
+            throw new NotFoundException();
+        Note note = await _repository.GetByIdAsync(id, userId);
+        GetNoteResponse response = note.MapToResponse();
+        return response;
+    }
+
+    public async Task<IEnumerable<GetNoteResponse>> GetAsync(Guid userId)
+    {
+        IEnumerable<Note> notes = await _repository.GetAllAsync(userId);
         List<GetNoteResponse> response = new List<GetNoteResponse>();
         foreach (Note note in notes)
             response.Add(note.MapToResponse());
         return response;
     }
 
-    public GetNoteResponse Get(Guid id, Guid userId)
+    public async Task UpdateAsync(Guid id, NoteRequest request, Guid userId)
     {
-        if (!_repository.Exists(id, userId))
-            throw new NotFoundException();
-        Note note = _repository.Get(id, userId);
-        GetNoteResponse response = note.MapToResponse();
-        return response;
-    }
-
-    public void Update(Guid id, NoteRequest request, Guid userId)
-    {
-        if (!_repository.Exists(id, userId))
+        if (!await _repository.ExistsAsync(id, userId))
             throw new NotFoundException();
         Note note = request.MapToNote();
-        _repository.Update(id, note);
+        await _repository.UpdateAsync(id, note);
     }
 }

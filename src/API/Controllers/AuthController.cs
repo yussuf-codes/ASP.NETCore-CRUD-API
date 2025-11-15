@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Exceptions;
@@ -19,11 +20,11 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost(Endpoints.Auth.Register)]
-    public IActionResult Register(UserRequest request)
+    public async Task<IActionResult> RegisterAsync(UserRequest request)
     {
         try
         {
-            _authService.Register(request);
+            await _authService.RegisterAsync(request);
             return NoContent();
         }
         catch (ConflictException)
@@ -33,11 +34,11 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost(Endpoints.Auth.Login)]
-    public IActionResult Login(UserRequest request)
+    public async Task<IActionResult> LoginAsync(UserRequest request)
     {
         try
         {
-            LoginResponse response = _authService.Login(request);
+            LoginResponse response = await _authService.LoginAsync(request);
             return Ok(response);
         }
         catch (System.Exception)

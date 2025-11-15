@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using API.Models;
 using API.Persistence;
 using API.Repositories.IRepositories;
@@ -17,55 +18,50 @@ public class EFCoreNotesRepository : INotesRepository
         _dbContext = dbContext;
     }
 
-    public Note Create(Note obj)
+    public async Task<Note> CreateAsync(Note obj)
     {
-        _dbContext.Notes.Add(obj);
-        _dbContext.SaveChanges();
+        await _dbContext.Notes.AddAsync(obj);
+        await _dbContext.SaveChangesAsync();
         return obj;
     }
 
-    public void Delete(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        Note obj = _dbContext.Notes.Single(obj => obj.Id == id);
+        Note obj = await _dbContext.Notes.SingleAsync(obj => obj.Id == id);
         _dbContext.Notes.Remove(obj);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public bool Exists(Guid id, Guid userId)
+    public async Task<bool> ExistsAsync(Guid id, Guid userId)
     {
-        Note? obj = _dbContext.Notes
+        return await _dbContext.Notes
+                            .AsNoTracking()
+                            .AnyAsync(obj => obj.Id == id && obj.UserId == userId);
+    }
+
+    public async Task<IEnumerable<Note>> GetAllAsync(Guid userId)
+    {
+        return await _dbContext.Notes
                             .AsNoTracking()
                             .Where(n => n.UserId == userId)
-                            .SingleOrDefault(obj => obj.Id == id);
-
-        if (obj is null)
-            return false;
-        return true;
+                            .ToListAsync();
     }
 
-    public IEnumerable<Note> Get(Guid userId)
+    public async Task<Note> GetByIdAsync(Guid id, Guid userId)
     {
-        return _dbContext.Notes
+        return await _dbContext.Notes
                             .AsNoTracking()
                             .Where(n => n.UserId == userId)
-                            .ToList();
+                            .SingleAsync(obj => obj.Id == id);
     }
 
-    public Note Get(Guid id, Guid userId)
+    public async Task UpdateAsync(Guid id, Note obj)
     {
-        return _dbContext.Notes
-                            .AsNoTracking()
-                            .Where(n => n.UserId == userId)
-                            .Single(obj => obj.Id == id);
-    }
-
-    public void Update(Guid id, Note obj)
-    {
-        Note existing = _dbContext.Notes.Single(n => n.Id == id);
+        Note existing = await _dbContext.Notes.SingleAsync(n => n.Id == id);
 
         existing.Title = obj.Title;
         existing.Body = obj.Body;
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 }

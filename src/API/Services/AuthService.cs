@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using API.DTOs.Requests;
 using API.DTOs.Responses;
 using API.Exceptions;
@@ -25,9 +26,9 @@ public class AuthService : IAuthService
         _usersRepository = usersRepository;
     }
 
-    public void Register(UserRequest request)
+    public async Task RegisterAsync(UserRequest request)
     {
-        if (_usersRepository.Exists(request.Username))
+        if (await _usersRepository.ExistsAsync(request.Username))
             throw new ConflictException();
 
         using HMACSHA512 hmac = new HMACSHA512();
@@ -39,15 +40,15 @@ public class AuthService : IAuthService
             Salt = hmac.Key
         };
 
-        _usersRepository.Create(user);
+        await _usersRepository.CreateAsync(user);
     }
 
-    public LoginResponse Login(UserRequest request)
+    public async Task<LoginResponse> LoginAsync(UserRequest request)
     {
-        User? user = _usersRepository.Get(request.Username);
+        if (!await _usersRepository.ExistsAsync(request.Username))
+            throw new ConflictException();
 
-        if (user is null)
-            throw new NotFoundException();
+        User user = await _usersRepository.GetAsync(request.Username);
 
         using HMACSHA512 hmac = new HMACSHA512(user.Salt);
 

@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Threading.Tasks;
 using API.Models;
 using API.Persistence;
 using API.Repositories.IRepositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories;
 
@@ -14,13 +16,13 @@ public class EFCoreUsersRepository : IUsersRepository
         _dbContext = dbContext;
     }
 
-    public void Create(User obj)
+    public async Task CreateAsync(User obj)
     {
-        _dbContext.Users.Add(obj);
-        _dbContext.SaveChanges();
+        await _dbContext.Users.AddAsync(obj);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public bool Exists(string username) => _dbContext.Users.Any(user => user.Username == username);
+    public async Task<bool> ExistsAsync(string username) => await _dbContext.Users.AnyAsync(user => user.Username == username);
 
-    public User? Get(string username) => _dbContext.Users.SingleOrDefault(user => user.Username == username);
+    public async Task<User> GetAsync(string username) => await _dbContext.Users.SingleAsync(user => user.Username == username);
 }
